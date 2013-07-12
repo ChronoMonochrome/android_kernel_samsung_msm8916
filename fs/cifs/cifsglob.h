@@ -377,6 +377,9 @@ struct smb_version_operations {
 			int);
 	/* check if we need to issue closedir */
 	bool (*dir_needs_close)(struct cifsFileInfo *);
+	int (*query_mf_symlink)(const unsigned char *path, char *pbuf,
+			unsigned int *pbytes_read, struct cifs_sb_info *cifs_sb,
+			unsigned int xid);
 };
 
 struct smb_version_values {

@@ -969,6 +969,7 @@ struct smb_version_operations smb1_operations = {
 	.get_acl = get_cifs_acl,
 	.set_acl = set_cifs_acl,
 #endif /* CIFS_ACL */
+	.query_mf_symlink = open_query_close_cifs_symlink,
 };
 
 struct smb_version_values smb1_values = {
