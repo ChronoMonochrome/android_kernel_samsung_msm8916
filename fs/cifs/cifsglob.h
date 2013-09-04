@@ -356,11 +356,11 @@ struct smb_version_operations {
 	/* push brlocks from the cache to the server */
 	int (*push_mand_locks)(struct cifsFileInfo *);
 	/* get lease key of the inode */
-	void (*get_lease_key)(struct inode *, struct cifs_fid *fid);
+	void (*get_lease_key)(struct inode *, struct cifs_fid *);
 	/* set lease key of the inode */
-	void (*set_lease_key)(struct inode *, struct cifs_fid *fid);
+	void (*set_lease_key)(struct inode *, struct cifs_fid *);
 	/* generate new lease key */
-	void (*new_lease_key)(struct cifs_fid *fid);
+	void (*new_lease_key)(struct cifs_fid *);
 	int (*generate_signingkey)(struct cifs_ses *);
 	int (*calc_signature)(struct smb_rqst *, struct TCP_Server_Info *);
 	int (*query_mf_symlink)(const unsigned char *, char *, unsigned int *,
@@ -381,6 +381,8 @@ struct smb_version_operations {
 			int);
 	/* check if we need to issue closedir */
 	bool (*dir_needs_close)(struct cifsFileInfo *);
+	/* create lease context buffer for CREATE request */
+	char * (*create_lease_buf)(u8 *, u8);
 };
 
 struct smb_version_values {
@@ -400,6 +402,7 @@ struct smb_version_values {
 	unsigned int	cap_large_files;
 	__u16		signing_enabled;
 	__u16		signing_required;
+	size_t		create_lease_size;
 };
 
 #define HEADER_SIZE(server) (server->vals->header_size)
