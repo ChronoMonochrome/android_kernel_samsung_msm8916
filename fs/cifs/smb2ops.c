@@ -752,6 +752,16 @@ smb2_create_lease_buf(u8 *lease_key, u8 oplock)
 	return (char *)buf;
 }
 
+static __u8
+smb2_parse_lease_buf(void *buf)
+{
+	struct create_lease *lc = (struct create_lease *)buf;
+
+	if (lc->lcontext.LeaseFlags & SMB2_LEASE_FLAG_BREAK_IN_PROGRESS)
+		return SMB2_OPLOCK_LEVEL_NOCHANGE;
+	return le32_to_cpu(lc->lcontext.LeaseState);
+}
+
 struct smb_version_operations smb20_operations = {
 	.compare_fids = smb2_compare_fids,
 	.setup_request = smb2_setup_request,
@@ -820,6 +830,7 @@ struct smb_version_operations smb20_operations = {
 	.is_read_op = smb2_is_read_op,
 	.set_oplock_level = smb2_set_oplock_level,
 	.create_lease_buf = smb2_create_lease_buf,
+	.parse_lease_buf = smb2_parse_lease_buf,
 };
 
 struct smb_version_operations smb21_operations = {
@@ -891,6 +902,7 @@ struct smb_version_operations smb21_operations = {
 	.set_oplock_level = smb21_set_oplock_level,
 	.dir_needs_close = smb2_dir_needs_close,
 	.create_lease_buf = smb2_create_lease_buf,
+	.parse_lease_buf = smb2_parse_lease_buf,
 };
 
 struct smb_version_operations smb30_operations = {
@@ -964,6 +976,7 @@ struct smb_version_operations smb30_operations = {
 	.set_oplock_level = smb21_set_oplock_level,
 	.dir_needs_close = smb2_dir_needs_close,
 	.create_lease_buf = smb2_create_lease_buf,
+	.parse_lease_buf = smb2_parse_lease_buf,
 };
 
 struct smb_version_values smb20_values = {
