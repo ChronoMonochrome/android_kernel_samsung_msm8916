@@ -927,6 +927,12 @@ cifs_query_symlink(const unsigned int xid, struct cifs_tcon *tcon,
 	return rc;
 }
 
+static bool
+cifs_is_read_op(__u32 oplock)
+{
+	return oplock == OPLOCK_READ;
+}
+
 struct smb_version_operations smb1_operations = {
 	.send_cancel = send_nt_cancel,
 	.compare_fids = cifs_compare_fids,
@@ -1002,6 +1008,7 @@ struct smb_version_operations smb1_operations = {
 	.set_acl = set_cifs_acl,
 #endif /* CIFS_ACL */
 	.query_mf_symlink = open_query_close_cifs_symlink,
+	.is_read_op = cifs_is_read_op,
 };
 
 struct smb_version_values smb1_values = {
@@ -1017,7 +1024,6 @@ struct smb_version_values smb1_values = {
 	.cap_unix = CAP_UNIX,
 	.cap_nt_find = CAP_NT_SMBS | CAP_NT_FIND,
 	.cap_large_files = CAP_LARGE_FILES,
-	.oplock_read = OPLOCK_READ,
 	.signing_enabled = SECMODE_SIGN_ENABLED,
 	.signing_required = SECMODE_SIGN_REQUIRED,
 };
